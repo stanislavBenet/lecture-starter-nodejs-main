@@ -1,5 +1,6 @@
 import { USER } from "../models/user.js";
 import { userService } from "../services/userService.js";
+import { getUserAgent } from "../helpers/userAgent.js";
 
 const GMAIL_REGEXP = new RegExp(/^([a-zA-Z0-9_\-\.]+)@(gmail+)\.(com)$/, "g");
 const PHONE_REGEXP = new RegExp(
@@ -9,9 +10,16 @@ const PHONE_REGEXP = new RegExp(
 
 const createUserValid = (req, res, next) => {
   // TODO: Implement validatior for USER entity during creation
+
   try {
-    const { firstName, lastName, email, phoneNumber, password } = req.body;
-    userService.checkIfRightField(USER, req.body);
+    let userAgent = getUserAgent(
+      req.headers["user-agent"],
+      "PostmanRuntime/7.30.0",
+      req
+    );
+
+    const { firstName, lastName, email, phoneNumber, password } = userAgent;
+    userService.checkIfRightField(USER, userAgent);
 
     if (!firstName) {
       throw new Error(`Error. First name must not be empty`);

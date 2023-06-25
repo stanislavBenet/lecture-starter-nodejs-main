@@ -1,13 +1,19 @@
 import { FIGHTER } from "../models/fighter.js";
 import { fighterService } from "../services/fighterService.js";
+import { getUserAgent } from "../helpers/userAgent.js";
 
 const createFighterValid = (req, res, next) => {
   // TODO: Implement validatior for FIGHTER entity during creation
   try {
-    fighterService.checkIfRightField(FIGHTER, req.body);
+    let userAgent = getUserAgent(
+      req.headers["user-agent"],
+      "PostmanRuntime/7.30.0",
+      req
+    );
 
-    const { name, power, defense, health = 100 } = req.body;
-    console.log(name);
+    const { name, power, defense, health = 100 } = userAgent;
+    fighterService.checkIfRightField(FIGHTER, userAgent);
+
     if (!name) {
       throw new Error(`Fighter name must not be empty`);
     } else if (!power) {

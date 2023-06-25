@@ -76,14 +76,14 @@ router.post(
       if (!currentFighter) {
         const fighter = fighterService.addFighter({
           ...req.body,
-          name: name.toLowerCase(),
+          name: name,
         });
         req.body = {
           ...fighter,
         };
         return req.body;
       } else {
-        throw new Error("Fighter not found");
+        throw new Error("Fighter already exists");
       }
     } catch ({ message }) {
       return (req.body = {
